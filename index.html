@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Настройки оформления</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--tg-theme-bg-color, #fff);
+    color: var(--tg-theme-text-color, #000);
+    padding: 16px;
+    min-height: 100vh;
+  }
+
+  h2 {
+    font-size: 17px;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+
+  .subtitle {
+    font-size: 13px;
+    color: var(--tg-theme-hint-color, #888);
+    margin-bottom: 20px;
+  }
+
+  .section {
+    background: var(--tg-theme-secondary-bg-color, #f5f5f5);
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-bottom: 16px;
+  }
+
+  .section-title {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--tg-theme-hint-color, #888);
+    margin-bottom: 12px;
+  }
+
+  .field {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(128,128,128,0.15);
+  }
+
+  .field:last-child { border-bottom: none; }
+
+  .field label {
+    font-size: 15px;
+    flex: 1;
+  }
+
+  .field .hint {
+    font-size: 12px;
+    color: var(--tg-theme-hint-color, #888);
+    margin-top: 2px;
+  }
+
+  .field input[type="number"],
+  .field input[type="text"],
+  .field select {
+    width: 130px;
+    padding: 6px 10px;
+    border-radius: 8px;
+    border: 1px solid rgba(128,128,128,0.3);
+    background: var(--tg-theme-bg-color, #fff);
+    color: var(--tg-theme-text-color, #000);
+    font-size: 15px;
+    text-align: right;
+  }
+
+  .field input[type="range"] {
+    width: 110px;
+  }
+
+  .range-value {
+    min-width: 36px;
+    text-align: right;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--tg-theme-link-color, #007aff);
+  }
+
+  .preview-box {
+    background: #fff;
+    border: 1px solid rgba(0,0,0,0.1);
+    border-radius: 8px;
+    padding: 16px 20px;
+    font-family: 'Times New Roman', serif;
+    font-size: 14px;
+    line-height: 1.8;
+    color: #000;
+    margin-top: 4px;
+    min-height: 80px;
+  }
+
+  .preset-name-input {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 1px solid rgba(128,128,128,0.3);
+    background: var(--tg-theme-bg-color, #fff);
+    color: var(--tg-theme-text-color, #000);
+    font-size: 15px;
+    margin-bottom: 16px;
+  }
+
+  .btn-save {
+    width: 100%;
+    padding: 14px;
+    background: var(--tg-theme-button-color, #007aff);
+    color: var(--tg-theme-button-text-color, #fff);
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 8px;
+  }
+
+  .btn-save:active { opacity: 0.8; }
+
+  .spacing-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .mini-field label {
+    font-size: 13px;
+    color: var(--tg-theme-hint-color, #888);
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  .mini-field input {
+    width: 100%;
+    padding: 8px 10px;
+    border-radius: 8px;
+    border: 1px solid rgba(128,128,128,0.3);
+    background: var(--tg-theme-bg-color, #fff);
+    color: var(--tg-theme-text-color, #000);
+    font-size: 15px;
+  }
+</style>
+</head>
+<body>
+
+<h2>⚙️ Настройки оформления</h2>
+<p class="subtitle">Параметры применятся к следующему отчёту</p>
+
+<input class="preset-name-input" id="preset-name" type="text" placeholder="Название пресета (например: ГОСТ ТГУ)">
+
+<div class="section">
+  <div class="section-title">Шрифт</div>
+
+  <div class="field">
+    <div>
+      <div class="label">Гарнитура</div>
+    </div>
+    <select id="font-name">
+      <option value="Times New Roman">Times New Roman</option>
+      <option value="Arial">Arial</option>
+      <option value="Calibri">Calibri</option>
+      <option value="Georgia">Georgia</option>
+    </select>
+  </div>
+
+  <div class="field">
+    <div>
+      <label>Размер</label>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px">
+      <input type="range" id="font-size" min="11" max="16" step="1" value="14" oninput="updateRange('font-size','font-size-val','pt')">
+      <span class="range-value" id="font-size-val">14pt</span>
+    </div>
+  </div>
+
+  <div class="field">
+    <label>Межстрочный интервал</label>
+    <select id="line-spacing">
+      <option value="single">Одинарный</option>
+      <option value="one_half" selected>Полуторный</option>
+      <option value="double">Двойной</option>
+    </select>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">Поля (см)</div>
+  <div class="spacing-row">
+    <div class="mini-field">
+      <label>Левое</label>
+      <input type="number" id="margin-left" value="3.0" min="1" max="5" step="0.5">
+    </div>
+    <div class="mini-field">
+      <label>Правое</label>
+      <input type="number" id="margin-right" value="1.5" min="0.5" max="3" step="0.5">
+    </div>
+    <div class="mini-field">
+      <label>Верхнее</label>
+      <input type="number" id="margin-top" value="2.0" min="1" max="4" step="0.5">
+    </div>
+    <div class="mini-field">
+      <label>Нижнее</label>
+      <input type="number" id="margin-bottom" value="2.0" min="1" max="4" step="0.5">
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">Абзац</div>
+  <div class="field">
+    <label>Отступ первой строки</label>
+    <div style="display:flex;align-items:center;gap:8px">
+      <input type="range" id="indent" min="0" max="2" step="0.25" value="1.25" oninput="updateRange('indent','indent-val','см')">
+      <span class="range-value" id="indent-val">1.25см</span>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">Предпросмотр</div>
+  <div class="preview-box" id="preview">
+    Цель работы: изучить принципы работы операционной системы.<br>
+    В ходе выполнения лабораторной работы мы рассмотрели основные команды и их применение на практике.<br><br>
+    <b>Вывод:</b> в результате работы были достигнуты поставленные цели.
+  </div>
+</div>
+
+<button class="btn-save" onclick="savePreset()">Сохранить пресет</button>
+
+<script>
+  const tg = window.Telegram.WebApp;
+  tg.ready();
+  tg.expand();
+
+  function updateRange(inputId, labelId, unit) {
+    const val = document.getElementById(inputId).value;
+    document.getElementById(labelId).textContent = val + unit;
+    updatePreview();
+  }
+
+  function updatePreview() {
+    const font    = document.getElementById('font-name').value;
+    const size    = document.getElementById('font-size').value;
+    const spacing = document.getElementById('line-spacing').value;
+    const indent  = document.getElementById('indent').value;
+
+    const lineHeightMap = { single: 1.4, one_half: 1.8, double: 2.4 };
+    const lh = lineHeightMap[spacing] || 1.8;
+
+    const preview = document.getElementById('preview');
+    preview.style.fontFamily  = `'${font}', serif`;
+    preview.style.fontSize    = size + 'px';
+    preview.style.lineHeight  = lh;
+    preview.style.textIndent  = (parseFloat(indent) * 37.8) + 'px';
+  }
+
+  document.querySelectorAll('select, input').forEach(el => {
+    el.addEventListener('change', updatePreview);
+  });
+
+  function collectSettings() {
+    return {
+      font_name:     document.getElementById('font-name').value,
+      font_size:     parseInt(document.getElementById('font-size').value),
+      margin_left:   parseFloat(document.getElementById('margin-left').value),
+      margin_right:  parseFloat(document.getElementById('margin-right').value),
+      margin_top:    parseFloat(document.getElementById('margin-top').value),
+      margin_bottom: parseFloat(document.getElementById('margin-bottom').value),
+      indent:        parseFloat(document.getElementById('indent').value),
+      line_spacing:  document.getElementById('line-spacing').value,
+    };
+  }
+
+  function savePreset() {
+    const name     = document.getElementById('preset-name').value.trim() || 'Мой пресет';
+    const settings = collectSettings();
+    const payload  = JSON.stringify({ name, settings });
+    tg.sendData(payload);
+  }
+
+  updatePreview();
+</script>
+</body>
+</html>
